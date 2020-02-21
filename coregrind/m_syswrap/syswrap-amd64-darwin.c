@@ -449,7 +449,7 @@ void wqthread_hijack(Addr self, Addr kport, Addr stackaddr, Addr workitem,
       lock. */
    VG_(acquire_BigLock_LL)("wqthread_hijack");
 
-   if (0) VG_(printf)(
+   if (1) VG_(printf)(
              "wqthread_hijack: self %#lx, kport %#lx, "
 	     "stackaddr %#lx, workitem %#lx, reuse/flags %x, sp %#lx\n", 
 	     self, kport, stackaddr, workitem, (UInt)reuse, sp);
@@ -476,7 +476,7 @@ void wqthread_hijack(Addr self, Addr kport, Addr stackaddr, Addr workitem,
      /* For whatever reason, tst->os_state.pthread appear to have a
         constant offset of 96 on 10.7, but zero on 10.6 and 10.5.  No
         idea why. */
-#      if DARWIN_VERS <= DARWIN_10_6
+#      if DARWIN_VERS <= DARWIN_10_6 || DARWIN_VERS == DARWIN_10_13
        UWord magic_delta = 0;
 #      elif DARWIN_VERS == DARWIN_10_7 || DARWIN_VERS == DARWIN_10_8
        UWord magic_delta = 0x60;
@@ -484,10 +484,11 @@ void wqthread_hijack(Addr self, Addr kport, Addr stackaddr, Addr workitem,
             || DARWIN_VERS == DARWIN_10_10 \
             || DARWIN_VERS == DARWIN_10_11 \
             || DARWIN_VERS == DARWIN_10_12 \
-            || DARWIN_VERS == DARWIN_10_13 \
-            || DARWIN_VERS == DARWIN_10_14 \
-            || DARWIN_VERS == DARWIN_10_15
+            || DARWIN_VERS == DARWIN_10_13
        UWord magic_delta = 0xE0;
+#      elif DARWIN_VERS == DARWIN_10_14 \
+            || DARWIN_VERS == DARWIN_10_15
+       UWord magic_delta = 0;
 #      else
 #        error "magic_delta: to be computed on new OS version"
          // magic_delta = tst->os_state.pthread - self
@@ -503,7 +504,7 @@ void wqthread_hijack(Addr self, Addr kport, Addr stackaddr, Addr workitem,
 
        tst = VG_(get_ThreadState)(tid);
 
-       if (0) VG_(printf)("wqthread_hijack reuse %s: tid %u, tst %p, "
+       if (1) VG_(printf)("wqthread_hijack reuse %s: tid %u, tst %p, "
                           "tst->os_state.pthread %#lx, self %#lx\n",
                           tst->os_state.pthread == self ? "SAME" : "DIFF",
                           tid, (void *)tst, tst->os_state.pthread, self);
@@ -530,6 +531,9 @@ void wqthread_hijack(Addr self, Addr kport, Addr stackaddr, Addr workitem,
    vex->guest_R8  = reuse;
    vex->guest_R9  = 0;
    vex->guest_RSP = sp;
+#if DARWIN_VERS >= DARWIN_10_12
+   vex->guest_GS_CONST = self + pthread_tsd_offset;
+#endif
 
    stacksize = 512*1024;  // wq stacks are always DEFAULT_STACK_SIZE
    stack = VG_PGROUNDUP(sp) - stacksize;
