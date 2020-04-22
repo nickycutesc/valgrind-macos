@@ -26,7 +26,6 @@ In case you already have Valgrind installed, you will need to either `unlink` it
 ## TODO
 
  - Get historical build data from sourceforge for macOS 10.13
- - pthread and signals blocking (re-enable tests)
  - wqthread broken (see #4) [patch in progress]
  - drd thread related crash on 10.15
  - add more suppressions for dyld [patch in progress]
@@ -491,12 +490,6 @@ none/tests/x86-darwin/bug350062          (stderr)
 none/tests/x86-darwin/cet_nops_gs        (stdout)
 none/tests/x86-darwin/cet_nops_gs        (stderr)
 ```
-
-Some tests are blocking and were therefore disabled:
-
- - `none/tests`
-   - `pselect_alarm`
-   - `pth_term_signal`
 
 ### macOS (10.15.1)
 

@@ -8,7 +8,7 @@
    This file is part of Valgrind, a dynamic binary instrumentation
    framework.
 
-   Copyright (C) 2000-2017 Julian Seward 
+   Copyright (C) 2000-2017 Julian Seward
       jseward@acm.org
 
    This program is free software; you can redistribute it and/or
@@ -42,7 +42,7 @@
    UNLESS YOU ARE 100% CERTAIN YOU UNDERSTAND THE CONSEQUENCES.
 */
 
-/* This module is also notable because it is linked into both 
+/* This module is also notable because it is linked into both
    stage1 and stage2. */
 
 /* IMPORTANT: on Darwin it is essential to use the _nocancel versions
@@ -130,7 +130,7 @@ static UInt local_sys_write_stderr ( const HChar* buf, Int n )
       : /*rd*/    "r" (block)
       : /*trash*/ "rax", "rdi", "rsi", "rdx", "memory", "cc", "rcx", "r11"
    );
-   if (block[0] < 0) 
+   if (block[0] < 0)
       block[0] = -1;
    return (UInt)block[0];
 }
@@ -181,7 +181,7 @@ static UInt local_sys_write_stderr ( const HChar* buf, Int n )
 static UInt local_sys_getpid ( void )
 {
    register UInt __res __asm__ ("r3");
-   __asm__ volatile ( 
+   __asm__ volatile (
       "li 0, %1\n\t"
       "sc"
       : "=&r" (__res)
@@ -224,7 +224,7 @@ static UInt local_sys_write_stderr ( const HChar* buf, Int n )
 static UInt local_sys_getpid ( void )
 {
    register ULong __res __asm__ ("r3");
-   __asm__ volatile ( 
+   __asm__ volatile (
       "li 0, %1\n\t"
       "sc"
       : "=&r" (__res)
@@ -627,12 +627,12 @@ static Int local_strlen ( const HChar* str )
 static HChar local_toupper ( HChar c )
 {
    if (c >= 'a' && c <= 'z')
-      return c + ('A' - 'a'); 
+      return c + ('A' - 'a');
    else
       return c;
 }
 
-/* Emit buf[0 .. n-1] to stderr.  Unfortunately platform-specific. 
+/* Emit buf[0 .. n-1] to stderr.  Unfortunately platform-specific.
 */
 static void emit ( const HChar* buf, Int n )
 {
@@ -665,12 +665,12 @@ static void emit ( const HChar* buf, Int n )
 #define VG_MSG_ALTFORMAT 32 /* Convert the value to alternate format */
 
 /* Copy a string into the buffer. */
-static 
+static
 UInt myvprintf_str ( void(*send)(HChar,void*),
                      void* send_arg2,
-                     Int flags, 
-                     Int width, 
-                     const HChar* str, 
+                     Int flags,
+                     Int width,
+                     const HChar* str,
                      Bool capitalise )
 {
 #  define MAYBE_TOUPPER(ch) (capitalise ? local_toupper(ch) : (ch))
@@ -713,7 +713,7 @@ UInt myvprintf_str ( void(*send)(HChar,void*),
 
 
 /* Copy a string into the buffer, escaping bad XML chars. */
-static 
+static
 UInt myvprintf_str_XML_simplistic ( void(*send)(HChar,void*),
                                     void* send_arg2,
                                     const HChar* str )
@@ -753,12 +753,12 @@ UInt myvprintf_str_XML_simplistic ( void(*send)(HChar,void*),
  *  If WITH_ZERO is true, '0' must be added.
  *  WIDTH is the width of the field.
  */
-static 
-UInt myvprintf_int64 ( void(*send)(HChar,void*), 
+static
+UInt myvprintf_int64 ( void(*send)(HChar,void*),
                        void* send_arg2,
-                       Int flags, 
-                       Int base, 
-                       Int width, 
+                       Int flags,
+                       Int base,
+                       Int width,
                        Bool capitalised,
                        ULong p )
 {
@@ -774,7 +774,7 @@ UInt myvprintf_int64 ( void(*send)(HChar,void*),
 
    if (base < 2 || base > 16)
       return ret;
- 
+
    if ((flags & VG_MSG_SIGNED) && (Long)p < 0) {
       p   = - (Long)p;
       neg = True;
@@ -785,7 +785,7 @@ UInt myvprintf_int64 ( void(*send)(HChar,void*),
    else {
       while (p > 0) {
          if (flags & VG_MSG_COMMA && 10 == base &&
-             0 == (ind-nc) % 3 && 0 != ind) 
+             0 == (ind-nc) % 3 && 0 != ind)
          {
             buf[ind++] = ',';
             nc++;
@@ -823,10 +823,10 @@ UInt myvprintf_int64 ( void(*send)(HChar,void*),
 /* A simple vprintf().  */
 /* EXPORTED */
 UInt
-VG_(debugLog_vprintf) ( 
-   void(*send)(HChar,void*), 
+VG_(debugLog_vprintf) (
+   void(*send)(HChar,void*),
    void* send_arg2,
-   const HChar* format, 
+   const HChar* format,
    va_list vargs
 )
 {
@@ -837,7 +837,7 @@ VG_(debugLog_vprintf) (
    Int  n_ls = 0;
    Bool is_long, is_sizet, caps;
 
-   /* We assume that vargs has already been initialised by the 
+   /* We assume that vargs has already been initialised by the
       caller, using va_start, and that the caller will similarly
       clean up with va_end.
    */
@@ -1024,7 +1024,7 @@ VG_(debugLog_vprintf) (
          case 's': case 'S': { /* %s */
             const HChar *str = va_arg (vargs, HChar *);
             if (str == NULL) str = "(null)";
-            ret += myvprintf_str(send, send_arg2, 
+            ret += myvprintf_str(send, send_arg2,
                                  flags, width, str, format[i]=='S');
             break;
          }
@@ -1157,9 +1157,9 @@ void VG_(debugLog_startup) ( Int level, const HChar* who )
    if (level < 0)  level = 0;
    if (level > 10) level = 10;
    loglevel = level;
-   VG_(debugLog)(1, "debuglog", 
+   VG_(debugLog)(1, "debuglog",
                  "DebugLog system started by %s, "
-                 "level %d logging requested\n", 
+                 "level %d logging requested\n",
                  who, loglevel);
 }
 
@@ -1175,11 +1175,11 @@ Int VG_(debugLog_getLevel) ( void )
 
 /* ------------ */
 
-typedef 
+typedef
    struct {
       HChar buf[100];
       Int   n;
-   } 
+   }
    printf_buf;
 
 static void add_to_buf ( HChar c, void* p )
@@ -1189,7 +1189,7 @@ static void add_to_buf ( HChar c, void* p )
    if (buf->n >= 100-10 /*paranoia*/ ) {
       emit( buf->buf, local_strlen(buf->buf) );
       buf->n = 0;
-      buf->buf[buf->n] = 0;      
+      buf->buf[buf->n] = 0;
    }
    buf->buf[buf->n++] = c;
    buf->buf[buf->n] = 0;
@@ -1222,7 +1222,7 @@ void VG_(debugLog) ( Int level, const HChar* modulename,
    for (i = 0; i < depth; i++) {
       (void)myvprintf_str ( add_to_buf, &buf, 0, 1, ">", False );
    }
-   
+
    (void)myvprintf_str ( add_to_buf, &buf, 0, 2, "--", False );
    (void)myvprintf_int64 ( add_to_buf, &buf, 0, 10, 1, False, (ULong)pid );
    (void)myvprintf_str ( add_to_buf, &buf, 0, 1, ":", False );
@@ -1232,7 +1232,7 @@ void VG_(debugLog) ( Int level, const HChar* modulename,
    (void)myvprintf_str ( add_to_buf, &buf, 0, indent, "", False );
 
    va_start(vargs,format);
-   
+
    (void) VG_(debugLog_vprintf) ( add_to_buf, &buf, format, vargs );
 
    if (buf.n > 0) {
